@@ -121,12 +121,20 @@ class TinyGPT(nn.Module):
         temperature: float = 0.8,
         top_k: int = 40,
         stop_token: int | None = None,
+        repetition_penalty: float = 1.15,
     ) -> torch.Tensor:
         self.eval()
         for _ in range(max_new_tokens):
             idx_cond = idx[:, -self.cfg.block_size:]
             logits, _ = self(idx_cond)
-            logits = logits[:, -1, :] / max(temperature, 1e-5)
+            logits = logits[:, -1, :]
+            if repetition_penalty != 1.0:
+                seen = idx_cond[0].unique()
+                penalized = logits[0, seen]
+                logits[0, seen] = torch.where(
+                    penalized > 0, penalized / repetition_penalty, penalized * repetition_penalty
+                )
+            logits = logits / max(temperature, 1e-5)
             if top_k is not None:
                 v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
                 logits[logits < v[:, [-1]]] = -float("inf")

@@ -58,13 +58,14 @@ class WordTokenizer:
         words = [w for w in words if w not in (PAD, Q, A, END)]
         out = ""
         for w in words:
-            if out and re.match(r"[a-z0-9]", w):
+            if out and re.match(r"[a-z0-9]", w) and not out.endswith(("'", "-", "(", "[", "{")):
                 out += " "
             elif out and w in "([{":
                 out += " "
             out += w
-        # Capitalize sentence starts for readability.
+        # Capitalize sentence starts and the pronoun "i" for readability.
         out = re.sub(r"(^|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
+        out = re.sub(r"\bi\b", "I", out)
         return out
 
     def save(self, path: str | Path) -> None:
