@@ -1,0 +1,40 @@
+#cloud-config
+# Provisions an Ubuntu VM to train and serve the AutoTech interview SLM.
+# Used automatically by azure/deploy.sh via --custom-data.
+
+package_update: true
+packages:
+  - python3-pip
+  - python3-venv
+  - git
+
+write_files:
+  - path: /etc/systemd/system/autotech-slm.service
+    content: |
+      [Unit]
+      Description=AutoTech Interview SLM API
+      After=network.target
+
+      [Service]
+      Type=simple
+      User=azureuser
+      WorkingDirectory=/opt/autotech-slm
+      ExecStart=/opt/autotech-slm/.venv/bin/uvicorn serve:app --host 0.0.0.0 --port 8000
+      Restart=always
+      RestartSec=5
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  # __REPO_URL__ is substituted by deploy.sh before the VM is created.
+  - git clone __REPO_URL__ /opt/autotech-slm
+  - python3 -m venv /opt/autotech-slm/.venv
+  - /opt/autotech-slm/.venv/bin/pip install --index-url https://download.pytorch.org/whl/cpu torch
+  - /opt/autotech-slm/.venv/bin/pip install -r /opt/autotech-slm/requirements.txt
+  # Train the model on the VM (a few minutes on 4 vCPUs), then verify throughput.
+  - cd /opt/autotech-slm && .venv/bin/python train.py --steps 3000
+  - cd /opt/autotech-slm && .venv/bin/python benchmark.py --target 30 | tee /var/log/slm-benchmark.log
+  - chown -R azureuser:azureuser /opt/autotech-slm
+  - systemctl daemon-reload
+  - systemctl enable --now autotech-slm
