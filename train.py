@@ -1,7 +1,7 @@
 """Train the automotive-technician interview language model.
 
 Usage:
-    python train.py [--steps 3000] [--data data/interview_qa.jsonl] [--out checkpoints]
+    python train.py [--steps 1500] [--data data/interview_qa.jsonl] [--out checkpoints]
 
 Each Q/A pair is encoded as:  <q> question tokens <a> answer tokens <end>
 Pairs are concatenated into one token stream and sampled in random windows.
@@ -51,8 +51,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="data/interview_qa.jsonl")
     ap.add_argument("--out", default="checkpoints")
-    ap.add_argument("--steps", type=int, default=3000)
-    ap.add_argument("--batch-size", type=int, default=16)
+    ap.add_argument("--steps", type=int, default=1500)
+    ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--block-size", type=int, default=256)
     ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--seed", type=int, default=1337)

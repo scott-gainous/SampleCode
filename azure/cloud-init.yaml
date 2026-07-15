@@ -33,7 +33,7 @@ runcmd:
   - /opt/autotech-slm/.venv/bin/pip install --index-url https://download.pytorch.org/whl/cpu torch
   - /opt/autotech-slm/.venv/bin/pip install -r /opt/autotech-slm/requirements.txt
   # Train the model on the VM (a few minutes on 4 vCPUs), then verify throughput.
-  - cd /opt/autotech-slm && .venv/bin/python train.py --steps 3000
+  - cd /opt/autotech-slm && .venv/bin/python train.py
   - cd /opt/autotech-slm && .venv/bin/python benchmark.py --target 30 | tee /var/log/slm-benchmark.log
   - chown -R azureuser:azureuser /opt/autotech-slm
   - systemctl daemon-reload
