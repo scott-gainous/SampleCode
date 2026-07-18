@@ -1,0 +1,41 @@
+{
+  "$comment": "Migration progress ledger. NEVER edit by hand — use `node tools/ledger.mjs`. States: not-started, analyzed, api-complete, ui-complete, parity-passed, cutover, retired.",
+  "updatedUtc": "2026-07-18T00:00:00Z",
+  "units": {
+    "dashboard": {
+      "status": "ui-complete",
+      "legacy": ["Default.aspx", "Default.aspx.cs"],
+      "sprocs": ["usp_Dashboard_Summary"],
+      "spec": "migration/specs/dashboard.md",
+      "note": "Scaffolded end-to-end; parity not yet run against a live DB."
+    },
+    "customers": {
+      "status": "api-complete",
+      "legacy": ["Customers.aspx", "Customers.aspx.cs", "CustomerEdit.aspx", "CustomerEdit.aspx.cs"],
+      "sprocs": ["usp_Customer_List", "usp_Customer_Get", "usp_Customer_Save"],
+      "spec": "migration/specs/customers.md",
+      "note": "List UI exists; edit form still needed for ui-complete."
+    },
+    "products": {
+      "status": "ui-complete",
+      "legacy": ["Products.aspx", "Products.aspx.cs"],
+      "sprocs": ["usp_Product_List"],
+      "spec": "migration/specs/products.md",
+      "note": "Scaffolded end-to-end; parity not yet run against a live DB."
+    },
+    "orders": {
+      "status": "api-complete",
+      "legacy": ["Orders.aspx", "Orders.aspx.cs", "OrderDetail.aspx", "OrderDetail.aspx.cs"],
+      "sprocs": ["usp_Order_List", "usp_Order_GetWithItems", "usp_Order_UpdateStatus"],
+      "spec": "migration/specs/orders.md",
+      "note": "List + detail UI exist; status-update UI still needed for ui-complete."
+    },
+    "auth": {
+      "status": "not-started",
+      "legacy": ["Login.aspx", "Login.aspx.cs", "Code/Security/AuthHelper.cs", "Code/Dal/UserDal.cs"],
+      "sprocs": [],
+      "spec": "migration/specs/auth.md",
+      "note": "Phase 4. Plan in inventory.md: modern identity + lazy SHA1 hash upgrade."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="ContosoOrders.Web.SiteMaster" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Contoso Orders</title>
+    <link href="Styles/site.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="header">
+            <h1>Contoso Orders</h1>
+            <div class="nav">
+                <asp:HyperLink ID="lnkHome" runat="server" NavigateUrl="~/Default.aspx" Text="Dashboard" />
+                <asp:HyperLink ID="lnkCustomers" runat="server" NavigateUrl="~/Customers.aspx" Text="Customers" />
+                <asp:HyperLink ID="lnkOrders" runat="server" NavigateUrl="~/Orders.aspx" Text="Orders" />
+                <asp:HyperLink ID="lnkProducts" runat="server" NavigateUrl="~/Products.aspx" Text="Products" />
+                <asp:LinkButton ID="btnLogout" runat="server" Text="Log out" OnClick="btnLogout_Click" />
+                <asp:Label ID="lblUser" runat="server" CssClass="user" />
+            </div>
+        </div>
+        <div class="content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+    </form>
+</body>
+</html>

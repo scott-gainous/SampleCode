@@ -1,0 +1,29 @@
+{
+  "unit": "products",
+  "capturedFrom": "legacy Products.aspx over db/seed 001_seed.sql",
+  "checks": [
+    {
+      "name": "list-default",
+      "request": { "method": "GET", "path": "/api/products" },
+      "expectStatus": 200,
+      "expect": [
+        { "sku": "GAD-090", "name": "Deluxe Gadget", "unitPrice": 47.00, "unitsInStock": 35, "discontinued": false },
+        { "sku": "GAD-050", "name": "Pocket Gadget", "unitPrice": 8.75, "unitsInStock": 560, "discontinued": false },
+        { "sku": "WID-200", "name": "Premium Widget", "unitPrice": 29.99, "unitsInStock": 120, "discontinued": false },
+        { "sku": "WID-100", "name": "Standard Widget", "unitPrice": 12.50, "unitsInStock": 340, "discontinued": false }
+      ]
+    },
+    {
+      "name": "list-include-discontinued",
+      "request": { "method": "GET", "path": "/api/products?includeDiscontinued=true" },
+      "expectStatus": 200,
+      "expect": [
+        { "sku": "GAD-090" },
+        { "sku": "LEG-001", "name": "Legacy Gizmo (retired)", "discontinued": true },
+        { "sku": "GAD-050" },
+        { "sku": "WID-200" },
+        { "sku": "WID-100" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "unit": "dashboard",
+  "capturedFrom": "legacy Default.aspx over db/seed 001_seed.sql",
+  "checks": [
+    {
+      "name": "summary",
+      "request": { "method": "GET", "path": "/api/dashboard" },
+      "expectStatus": 200,
+      "expect": {
+        "customerCount": 4,
+        "productCount": 4,
+        "openOrderCount": 2,
+        "revenueToDate": 707.72
+      }
+    }
+  ]
+}

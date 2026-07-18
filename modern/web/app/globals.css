@@ -1,0 +1,51 @@
+:root {
+  --brand: #2b4a6f;
+  --border: #d5d9e0;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  background: #f7f8fa;
+  color: #1c2430;
+}
+
+.header {
+  background: var(--brand);
+  color: #fff;
+  padding: 14px 24px;
+}
+
+.header h1 { margin: 0 0 8px; font-size: 20px; }
+.header nav a { color: #cfe0f5; margin-right: 18px; text-decoration: none; }
+.header nav a:hover { text-decoration: underline; }
+
+.content { padding: 24px; max-width: 1100px; }
+
+table {
+  border-collapse: collapse;
+  background: #fff;
+  width: 100%;
+}
+th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+th { background: #e9eef5; }
+
+.tiles { display: flex; gap: 14px; flex-wrap: wrap; }
+.tile {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 26px;
+  text-align: center;
+  min-width: 160px;
+}
+.tile .big { display: block; font-size: 30px; font-weight: 700; color: var(--brand); }
+
+.status { padding: 2px 8px; border-radius: 10px; font-size: 13px; }
+.status-Pending { background: #fff3cd; }
+.status-Shipped { background: #d4edda; }
+.status-Cancelled { background: #f8d7da; }
