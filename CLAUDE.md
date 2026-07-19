@@ -52,6 +52,20 @@ once per clone before first use): `/tdd`, `/implement`, `/code-review`, `/to-spe
 `/research`, `/prototype`, and more. Use `/tdd` when porting legacy business rules into
 `modern/api/Domain/`, and `/diagnosing-bugs` when triaging parity divergences.
 
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues on `scott-gainous/SampleCode` (gh CLI locally; GitHub MCP tools in remote sessions). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `CONTEXT.md` + `docs/adr/` (created lazily); migration specs are the behavioral authority for migration units. See `docs/agents/domain.md`.
+
 ## MCP servers (`.mcp.json`)
 
 - **context7** — up-to-date library docs (Next.js, Dapper, xunit...). Ask for docs with
