@@ -1,0 +1,60 @@
+{
+  "unit": "customers",
+  "capturedFrom": "legacy Customers.aspx + CustomerEdit.aspx over db/seed 001_seed.sql",
+  "checks": [
+    {
+      "name": "list-default",
+      "request": { "method": "GET", "path": "/api/customers" },
+      "expectStatus": 200,
+      "expect": [
+        { "companyName": "Fabrikam Inc", "contactName": "Ava Chen", "email": "ava@fabrikam.example", "city": "Seattle", "country": "USA", "isActive": true, "orderCount": 2 },
+        { "companyName": "Litware LLC", "contactName": "Sam Ortiz", "email": "sam@litware.example", "city": "Denver", "country": "USA", "isActive": true, "orderCount": 1 },
+        { "companyName": "Tailspin Toys", "contactName": "Riley Novak", "email": "riley@tailspin.example", "city": "Toronto", "country": "Canada", "isActive": true, "orderCount": 1 },
+        { "companyName": "Wide World Importers", "contactName": "Priya Raman", "email": "priya@wwi.example", "city": "London", "country": "UK", "isActive": true, "orderCount": 1 }
+      ]
+    },
+    {
+      "name": "list-include-inactive",
+      "request": { "method": "GET", "path": "/api/customers?includeInactive=true" },
+      "expectStatus": 200,
+      "expect": [
+        { "companyName": "Fabrikam Inc" },
+        { "companyName": "Litware LLC" },
+        { "companyName": "Proseware GmbH", "isActive": false, "orderCount": 0 },
+        { "companyName": "Tailspin Toys" },
+        { "companyName": "Wide World Importers" }
+      ]
+    },
+    {
+      "name": "get-by-id",
+      "request": { "method": "GET", "path": "/api/customers/1" },
+      "expectStatus": 200,
+      "expect": { "customerId": 1, "companyName": "Fabrikam Inc", "phone": "555-0101" }
+    },
+    {
+      "name": "get-missing",
+      "request": { "method": "GET", "path": "/api/customers/9999" },
+      "expectStatus": 404
+    },
+    {
+      "name": "save-duplicate-email",
+      "deliberate": "specs/customers.md — duplicate email: legacy inline label, modern 409",
+      "request": {
+        "method": "POST",
+        "path": "/api/customers",
+        "body": { "companyName": "Dup Co", "contactName": "Dup", "email": "ava@fabrikam.example" }
+      },
+      "expectStatus": 409,
+      "expect": { "error": "A customer with that email already exists." }
+    },
+    {
+      "name": "save-validation",
+      "request": {
+        "method": "POST",
+        "path": "/api/customers",
+        "body": { "companyName": "", "contactName": "X", "email": "not-an-email" }
+      },
+      "expectStatus": 400
+    }
+  ]
+}

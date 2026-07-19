@@ -1,0 +1,67 @@
+{
+  "unit": "orders",
+  "capturedFrom": "legacy Orders.aspx + OrderDetail.aspx over db/seed 001_seed.sql",
+  "checks": [
+    {
+      "name": "list-default",
+      "request": { "method": "GET", "path": "/api/orders" },
+      "expectStatus": 200,
+      "expect": [
+        { "orderId": 4, "companyName": "Tailspin Toys", "status": "Pending", "orderTotal": 105.00 },
+        { "orderId": 2, "companyName": "Fabrikam Inc", "status": "Pending", "orderTotal": 89.97 },
+        { "orderId": 3, "companyName": "Litware LLC", "status": "Shipped", "orderTotal": 344.00 },
+        { "orderId": 1, "companyName": "Fabrikam Inc", "status": "Shipped", "orderTotal": 168.75 },
+        { "orderId": 5, "companyName": "Wide World Importers", "status": "Cancelled", "orderTotal": 29.99 }
+      ]
+    },
+    {
+      "name": "list-filter-status",
+      "request": { "method": "GET", "path": "/api/orders?status=Pending" },
+      "expectStatus": 200,
+      "expect": [
+        { "orderId": 4 },
+        { "orderId": 2 }
+      ]
+    },
+    {
+      "name": "list-filter-customer",
+      "request": { "method": "GET", "path": "/api/orders?customerId=1" },
+      "expectStatus": 200,
+      "expect": [
+        { "orderId": 2 },
+        { "orderId": 1 }
+      ]
+    },
+    {
+      "name": "detail-with-items",
+      "request": { "method": "GET", "path": "/api/orders/1" },
+      "expectStatus": 200,
+      "expect": {
+        "orderId": 1,
+        "companyName": "Fabrikam Inc",
+        "status": "Shipped",
+        "orderTotal": 168.75,
+        "items": [
+          { "sku": "WID-100", "quantity": 10, "unitPrice": 12.50, "lineTotal": 125.00 },
+          { "sku": "GAD-050", "quantity": 5, "unitPrice": 8.75, "lineTotal": 43.75 }
+        ]
+      }
+    },
+    {
+      "name": "detail-missing",
+      "request": { "method": "GET", "path": "/api/orders/9999" },
+      "expectStatus": 404
+    },
+    {
+      "name": "invalid-transition-from-terminal",
+      "deliberate": "specs/orders.md — quirk 1: legacy silently ignored invalid transitions; modern returns 409",
+      "request": { "method": "POST", "path": "/api/orders/5/status", "body": { "status": "Shipped" } },
+      "expectStatus": 409
+    },
+    {
+      "name": "unknown-status-rejected",
+      "request": { "method": "POST", "path": "/api/orders/2/status", "body": { "status": "Open" } },
+      "expectStatus": 400
+    }
+  ]
+}

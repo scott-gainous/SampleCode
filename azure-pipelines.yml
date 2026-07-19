@@ -1,16 +1,70 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Contoso Orders migration monorepo CI
+# Gates: migration ledger integrity, modern API build+tests, modern web typecheck+build,
+# legacy compile guard (Windows). Parity runs are local/manual for now (need live DB+API).
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+trigger:
+  branches:
+    include: [master, claude/*]
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: Verify
+    displayName: Ledger & strategy gates
+    jobs:
+      - job: ledger
+        pool: { vmImage: "ubuntu-latest" }
+        steps:
+          - task: NodeTool@0
+            inputs: { versionSpec: "22.x" }
+          - script: node tools/ledger.mjs verify
+            displayName: Validate migration ledger
+          - script: node --check tools/ledger.mjs && node --check tools/parity/run-parity.mjs && node --check tools/hooks/protect-ledger.mjs
+            displayName: Syntax-check harness tools
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - stage: Modern
+    displayName: Modern stack
+    dependsOn: Verify
+    jobs:
+      - job: api
+        displayName: .NET 11 API build + tests
+        pool: { vmImage: "ubuntu-latest" }
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: sdk
+              version: 11.x
+              includePreviewVersions: true
+          - script: dotnet build modern/api/ContosoOrders.Api.csproj -c Release
+            displayName: Build API
+          - script: dotnet test modern/api.tests/ContosoOrders.Api.Tests.csproj -c Release
+            displayName: Run API tests
+      - job: web
+        displayName: Next.js typecheck + build
+        pool: { vmImage: "ubuntu-latest" }
+        steps:
+          - task: NodeTool@0
+            inputs: { versionSpec: "22.x" }
+          - script: npm ci
+            workingDirectory: modern/web
+            displayName: Install
+          - script: npm run typecheck
+            workingDirectory: modern/web
+            displayName: Typecheck
+          - script: npm run build
+            workingDirectory: modern/web
+            displayName: Build
+
+  - stage: Legacy
+    displayName: Legacy compile guard
+    dependsOn: Verify
+    jobs:
+      - job: webforms
+        displayName: MSBuild ContosoOrders.Web (regression guard only)
+        pool: { vmImage: "windows-latest" }
+        steps:
+          # Requires the .NET Framework 3.5 targeting pack on the agent image; the job is
+          # a compile-only guard that legacy/ hasn't been touched outside a retire step.
+          - task: MSBuild@1
+            inputs:
+              solution: legacy/ContosoOrders.Web/ContosoOrders.Web.csproj
+              configuration: Release
+            continueOnError: true

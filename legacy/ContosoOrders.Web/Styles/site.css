@@ -1,0 +1,17 @@
+body { font-family: Verdana, Arial, sans-serif; font-size: 13px; margin: 0; background: #f4f4f0; }
+.header { background: #2b4a6f; color: #fff; padding: 12px 20px; }
+.header h1 { margin: 0 0 8px 0; font-size: 20px; }
+.nav a { color: #cfe0f5; margin-right: 16px; text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+.nav .user { color: #9db8d8; float: right; }
+.content { padding: 20px; }
+.grid { border-collapse: collapse; background: #fff; }
+.grid th, .grid td { border: 1px solid #ccc; padding: 5px 10px; text-align: left; }
+.grid th { background: #dde6f0; }
+.form td { padding: 4px 8px; }
+.error { color: #a00; font-weight: bold; }
+.summary { display: block; }
+.tile { display: inline-block; background: #fff; border: 1px solid #ccc; padding: 16px 24px; margin-right: 12px; text-align: center; }
+.tile .big { display: block; font-size: 28px; font-weight: bold; color: #2b4a6f; }
+.total { font-weight: bold; }
+.login-box { width: 280px; margin: 80px auto; background: #fff; border: 1px solid #ccc; padding: 20px; }
